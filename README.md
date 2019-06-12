@@ -11,5 +11,5 @@ pip install git+https://github.com/EthanHolleman/fasta_tools
 ```
 To install the package, I'll probably be editing the fasta parsing/editing/reading files often with no warning so enjoy. In case for some reason you really want the latest version of this fasta_tools uninstall using pip then reinstall 
 ```
-pip uninstall git+https://github.com/EthanHolleman/fasta_tools
+pip uninstall fasta_tools
 ```
