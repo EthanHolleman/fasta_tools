@@ -12,5 +12,5 @@ __all__ = [
     'correct_1h1s_error',
     'write_from_list',
     'write_from_dictionary',
-    'write_from_tuple_list'    
+    'write_from_tuple_list'
 ]

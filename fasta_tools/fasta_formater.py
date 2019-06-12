@@ -1,17 +1,18 @@
 
 def check_formating(fasta_file):
     # runs all existing format check and fix methods, will expand as needed
+    # change this to fasta tuples list or something so only read data once
     no_error = True
-    with open(fasta_file, 'r') as fasta:
-        for i, line in enumerate(fasta):
-            print(i)
-            if i % 2 == 0 and line[0] != '>':
-                print('1h1s error found correcting now')
-                correct_1h1s_error(fasta_file)
-                no_error = False
-                break
+
         if no_error:
             print('No errors found')
+
+
+def check_1h1s_error(fasta_file):
+    with open(fasta_file, 'r') as fasta:
+        for i, line in enumerate(fasta):
+            if i % 2 == 0 and line[0] != '>':
+                return False
 
 
 def correct_1h1s_error(fasta_file):
