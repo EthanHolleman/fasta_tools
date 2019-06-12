@@ -3,14 +3,8 @@ from .fasta_formater import *
 from .fasta_getters import *
 from .fasta_writers import *
 
-# if somebody does "from somepackage import *", this is what they will
-# be able to access:
 __all__ = [
-    'write_from_list',
-    'write_from_dictionary',
-    'check_formating',
-    'correct_1h1s_error',
-    'write_from_list',
-    'write_from_dictionary',
-    'write_from_tuple_list'    
+    'fasta_formater',
+    'fasta_getters',
+    'fasta_writers'
 ]

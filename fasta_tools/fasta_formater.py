@@ -1,10 +1,11 @@
+import os
+
 
 def check_formating(fasta_file):
-    # runs all existing format check and fix methods, will expand as needed
+    '''runs all existing format check and fix methods, will expand as needed'''
     no_error = True
     with open(fasta_file, 'r') as fasta:
         for i, line in enumerate(fasta):
-            print(i)
             if i % 2 == 0 and line[0] != '>':
                 print('1h1s error found correcting now')
                 correct_1h1s_error(fasta_file)
@@ -15,8 +16,10 @@ def check_formating(fasta_file):
 
 
 def correct_1h1s_error(fasta_file):
-    # corrects file having sequence on multible lines
-    # 1h1s = 1 header, 1 sequence
+    '''
+    corrects file having sequence on multible lines
+    1h1s = 1 header, 1 sequence
+    '''
     header_list = []
     seq_list = []
     current_seq = ''
