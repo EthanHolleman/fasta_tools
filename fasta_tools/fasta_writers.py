@@ -12,9 +12,11 @@ def write_from_dictionary(fasta_dict, output_name):
             out.write('{}\n{}\n').format(key.strip(), value.strip())
 
 
-def write_from_tuple_list(fasta_tuples, output_name):
+def write_from_tuple_list(fasta_tuples, output_name='tuples.fna'):
     ''' writes fasta file from list tuples, [(header, seq)] '''
     with open(output_name, 'w') as out:
         for tuple in fasta_tuples:
             header, seq = tuple
-            out.write('{}\n{}\n').format(key.strip(), value.strip())
+            out.write(header + '\n' + seq + '\n')
+
+    return output_name
