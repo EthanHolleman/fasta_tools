@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-=======
 # methods that get return information from a fasta file
 # methods do not modify the original file
 
->>>>>>> 01d4e3c6005bcd6148e3780bb331fe38f89b4b54
 
 def get_entry(identifier, fasta_file):
     '''
@@ -15,13 +12,8 @@ def get_entry(identifier, fasta_file):
     try:
         with open(fasta_file) as fasta:
             if type(identifier) == int:
-<<<<<<< HEAD
                 fasta_lines = fasta.readlines()
                 return (fasta_lines[identifier], fasta_lines[identifier+1])
-=======
-                    fasta_lines = fasta.readlines()
-                    return (fasta_lines[identifier], fasta_lines[identifier+1])
->>>>>>> 01d4e3c6005bcd6148e3780bb331fe38f89b4b54
             elif type(identifier) == str:
                 headers = get_fasta_headers()
                 headers = [set(header.split(' ')) for header in headers]
