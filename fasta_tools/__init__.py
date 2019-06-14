@@ -2,6 +2,7 @@ from .version import __version__
 from .fasta_formater import *
 from .fasta_getters import *
 from .fasta_writers import *
+from .check_depends import *
 
 __all__ = [
     'write_from_list',
