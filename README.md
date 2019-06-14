@@ -18,7 +18,8 @@ docs.txt contains the pydoc generated documentation.
 
 To use the functions in the conensus_tools.py file you should intall clustalo (clustal omega) and emboss.
 Ubuntu install commands
-'''
+
+```
 sudo apt-get install clustalo
 sudo apt-get install emboss
-'''
+```
