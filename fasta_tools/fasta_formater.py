@@ -1,7 +1,8 @@
 import os
-
+from fasta_writers import *
 
 def check_formating(fasta_file, overwrite=True):
+    # TODO: Should check and try to correct carrot errors as this will effect 1h1s errors
     '''
     runs all existing format check and fix methods, will expand as needed
     by defualt a fasta file with errors found in it will be overwritten
@@ -12,13 +13,12 @@ def check_formating(fasta_file, overwrite=True):
     with open(fasta_file) as fasta:
         fasta = fasta.readlines()
 
-        if check_1h1s_error == True:
+        if check_1h1s_error(fasta) == True:
             error_types.append('1h1s error')
             if overwrite:
-                write_fasta_from_zip(correct_1h1s_error(fasta))
-        if check_carrot_error == tuple:
-            pass
-            # need to add
+                write_fasta_from_zip(correct_1h1s_error(fasta), fasta_file)
+        if check_carrot_error(fasta) == tuple:
+            error_types.append('carrot error')
 
         if error_types == []:
             return 'Passed all Tests'
@@ -31,7 +31,7 @@ def check_1h1s_error(fasta_list):
     Checks fasta in list format for a 1h1s error
     returns true if present and false otherwise
     '''
-    for line in enumerate(fasta_list):
+    for i, line in enumerate(fasta_list):
         if i % 2 == 0 and line[0] != '>':
             return True
     return False
@@ -44,10 +44,10 @@ def check_carrot_error(fasta_list):
         if fasta_list[i][0] != '>':
             error_indicies.append(i)
 
-    if fasta_list:
+    if error_indicies != []:
         return tuple(error_indicies)
-    else: return False
-
+    else:
+        return False
 
 
 def correct_1h1s_error(fasta_list):
@@ -70,9 +70,3 @@ def correct_1h1s_error(fasta_list):
             current_seq += line.strip()
 
     return zip(header_list, seq_list)
-
-
-def write_fasta_from_zip(zipped_list, output_name):
-    with open(output_name) as out:
-        for header, seq in zipped_list:
-            out.write('{}\n{}\n'.format(header, seq))

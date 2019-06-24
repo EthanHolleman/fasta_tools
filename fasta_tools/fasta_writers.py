@@ -17,6 +17,11 @@ def write_from_tuple_list(fasta_tuples, output_name='tuples.fna'):
     with open(output_name, 'w') as out:
         for tuple in fasta_tuples:
             header, seq = tuple
-            out.write(header + '\n' + seq + '\n')
+            out.write(header.strip() + '\n' + seq.strip() + '\n')
 
     return output_name
+
+def write_fasta_from_zip(zipped_list, output_name):
+    with open(output_name, 'w') as out:
+        for header, seq in zipped_list:
+            out.write('{}\n{}\n'.format(header, seq))

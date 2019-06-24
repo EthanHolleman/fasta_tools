@@ -25,7 +25,8 @@ def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=Fal
 
     try:
         new_file = write_from_tuple_list(con_elements, output_name)
-        embosser(clustalize(new_file), consensus_header)
+        print("file writen to " + output_name)
+        embosser(clustalize(new_file, output_name), consensus_header, output_name)
 
     except FileNotFoundError as e:
         return e
@@ -49,26 +50,27 @@ def get_random_elements(elements):
     return rand_elements
 
 
-def clustalize(rep_elements):
+def clustalize(rep_elements, output_name):
     '''
     runs clustal omega to create a clustalized file
     '''
-    clustal_command = 'clustalo -i {} -o {} -v --force'.format(rep_elements, rep_elements)
+    clustal_command = 'clustalo -i {} -o {} -v --force'.format(rep_elements, output_name)
     print(clustal_command)
     os.system(clustal_command)
 
-    return rep_elements
+    return output_name
 
 
 
-def embosser(clustalized_file, header):
+def embosser(clustalized_file, header, output_name):
     '''
     runs embosse to create a consensus file of a previously
     clustalized file
     '''
-    command = 'em_cons -sformat pearson -sequence {} -outseq {}'.format(clustalized_file, clustalized_file)
+    command = 'em_cons -sformat pearson -sequence {} -outseq {}'.format(clustalized_file, output_name)
     os.system(command)
-    rename_emboss(header)
+    rename_emboss(header, output_name)
+
 
 def rename_emboss(header, embossed_file):
     '''
@@ -78,7 +80,7 @@ def rename_emboss(header, embossed_file):
     if header is not False:
         lines = []
         with open(embossed_file, 'r') as emboss:
-            lines = emboss.readlines
+            lines = emboss.readlines()
         with open(embossed_file, 'w') as emboss:
             emboss.write(header + '\n' + lines[1])
 
