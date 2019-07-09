@@ -43,27 +43,37 @@ def identify_LTR(header):
     else:
         return False
 
-def seperate_solos(single_element_fasta, write_path='', file_ext='.fna'):
+def get_clean_filename(filename):
+    return filename.split('/')[-1].split('.')[0]
+
+
+def seperate_types(single_element_fasta, write_path='', file_ext='.fna'):
     '''
     Creates two fasta files one containing intact elements and another containing solo
     elements from a fasta file of a single family of elements but containg both solo and
     intacts. Important for creating consensus sequences to feed to transposer. New files are named
     as family name_status.fna and file names are returned as a tuple
     '''
-    pass
     tuples = read_as_tuples(single_element_fasta)
     solos, intacts = [], []
     ind = ('SOLO', 'INTACT')
+    filename = get_clean_filename(single_element_fasta)
 
     for element in tuples:
         header, seq = element
-        temp_dict = parse_header_dict(single_element_fasta)
-        description = temp_dict['Status']
+        temp_dict = parse_header_dict(header)
+        description = temp_dict['Description']
 
         if description == 'SOLO':
             solos.append(element)
         elif description == 'INTACT':
             intacts.append(element)
+
+    solo_path = os.path.join(write_path, filename + ind[0] + file_ext)
+    intact_path = os.path.join(write_path, filename + ind[1] + file_ext)
+
+    write_from_tuple_list(solos, solo_path)
+    write_from_tuple_list(intacts, intact_path)
 
 
 def split_fasta_writer(element_dict, file_name_editor=False, file_ext='.fna'):
@@ -101,19 +111,15 @@ def fasta_splitter(big_fasta_file, dir_key = 'Super_Family', soy_key='Family', f
     fasta_tuples = read_as_tuples(big_fasta_file)
     element_dict = {}
     file_names = []
-    
+
     for header, seq in fasta_tuples:
         temp_dict = parse_header_dict(header)
         super_family = temp_dict[dir_key]
         family = temp_dict[soy_key].replace('/', '_')
 
-
         if super_family not in element_dict:
             element_dict[super_family] = {family:[(header, seq)]}
-            if 'U' in element_dict[super_family]:
-                print(super_family)
-                print('Found it')
-                print(type(family))
+            file_names.append(super_family)
         else:
             family_dict = element_dict[super_family]
             if family not in family_dict:
@@ -122,3 +128,8 @@ def fasta_splitter(big_fasta_file, dir_key = 'Super_Family', soy_key='Family', f
                 element_dict[super_family][family].append((header, seq))
 
     split_fasta_writer(element_dict, file_name_editor, file_ext)
+    return get_clean_filename
+
+def make_all_type_cons(fasta_file):
+    family_dirs = fasta_splitter(fasta_file)
+    # read files in each family and make a consensus of those files if are LTR elements

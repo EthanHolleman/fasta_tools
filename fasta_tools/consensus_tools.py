@@ -5,6 +5,9 @@ from fasta_writers import *
 from check_depends import *
 
 
+
+
+
 def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=False, rep_elements=True):
     '''
     takes fasta file, runs clustal omega then uses
@@ -24,6 +27,7 @@ def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=Fal
         con_elements = [element_tuples[index/2] for index in rep_elements]
 
     try:
+        print(con_elements)
         new_file = write_from_tuple_list(con_elements, output_name)
         print("file writen to " + output_name)
         embosser(clustalize(new_file, output_name), consensus_header, output_name)
@@ -39,9 +43,9 @@ def get_random_elements(elements):
     '''
     rand_elements = []
     max_range = 0
-    if len(elements) < 10:
+    if len(elements) < 20:
         max_range = len(elements)
-    else: max_range = 11
+    else: max_range = 20
 
     for i in range(0, max_range):
         rand = random.randint(0, len(elements)-1)
@@ -67,7 +71,7 @@ def embosser(clustalized_file, header, output_name):
     runs embosse to create a consensus file of a previously
     clustalized file
     '''
-    command = 'em_cons -sformat pearson -sequence {} -outseq {}'.format(clustalized_file, output_name)
+    command = 'em_cons -sformat pearson -datafile EDNAFULL -sequence {} -outseq {} -snucleotide1'.format(clustalized_file, output_name)
     os.system(command)
     rename_emboss(header, output_name)
 
