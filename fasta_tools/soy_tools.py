@@ -1,7 +1,10 @@
 from fasta_writers import *
 from fasta_readers import *
+from fasta_formater import *
+from consensus_tools import make_consensus
 import os
 
+allowed_fasta_types = ['fna', 'fasta', 'fa']
 
 def parse_header_tuple(header):
     '''
@@ -44,7 +47,10 @@ def identify_LTR(header):
         return False
 
 def get_clean_filename(filename):
-    return filename.split('/')[-1].split('.')[0]
+    return os.path.basename(filename).split('.')[0]
+
+def get_clean_file_ext(filename):
+    return os.path.basename(filename).split('.')[-1]
 
 
 def seperate_types(single_element_fasta, write_path='', file_ext='.fna'):
@@ -75,6 +81,70 @@ def seperate_types(single_element_fasta, write_path='', file_ext='.fna'):
     write_from_tuple_list(solos, solo_path)
     write_from_tuple_list(intacts, intact_path)
 
+    return tuple([solo_path, intact_path])
+
+
+def seperate_types_supfamily_wide(family_folder, write_path='', verbose=True):
+    '''
+    Seperates the solo and intact elements of all the fasta files contained
+    within a folder. It is intended that all files are from the same family but
+    this is not a requirement.
+    '''
+    write_log = []
+    fam_files = os.listdir(family_folder)
+    #fam_files = [file for file in fam_files if get_clean_file_ext(file) in allowed_fasta_types]
+    # validates all files are of the fasta type
+
+    for file in fam_files:
+        file = os.path.join(family_folder, file)
+        if verbose is True:
+            print('Seperating {}'.format(file))
+        solos, intacts = seperate_types(file, write_path)
+        write_log.append(solos)
+        write_log.append(intacts)
+
+    return write_log
+
+def make_consensus_name(og_file, keyword='consensus', new_path=None):
+    base = os.path.basename(og_file)
+    file, ext = tuple(base.split('.'))
+    if new_path is None:
+        path = og_file.replace(base, '')
+    else:
+        path = new_path
+        if path[-1] != '/':
+            path = '{}{}'.format(path, '/')
+
+    return '{}{}_{}.{}'.format(path, keyword, file, ext)
+
+
+def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, verbose=True, rm_seperated=True):
+    '''
+    given a directory of a superfamily, seperates each family into solo and intact
+    elements, then creates a consensus for each of those element types.
+    '''
+    con_log = []
+    type_log = seperate_types_supfamily_wide(super_family_dir, super_family_dir, verbose=verbose)
+    print(type_log)
+
+    for file in type_log:
+        con_name = make_consensus_name(file)
+        out_name = make_consensus_name(file, new_path=output_path)
+        print(out_name + '============================')
+        if verbose == True:
+            print('Making consensus of: {}'.format(file))
+        make_consensus(file, output_name=out_name)
+
+        con_log.append(con_name)
+        check_formating(con)
+
+        if rm_seperated is True:
+            os.remove(file)
+
+    return con_log
+
+
+one_consensus_method_to_rule_them_all(super_family_dir='/media/ethan/Vault/Soy_fams/Gypsy', output_path='/home/ethan/Documents/test_con')
 
 def split_fasta_writer(element_dict, file_name_editor=False, file_ext='.fna'):
     '''
@@ -118,7 +188,7 @@ def fasta_splitter(big_fasta_file, dir_key = 'Super_Family', soy_key='Family', f
         family = temp_dict[soy_key].replace('/', '_')
 
         if super_family not in element_dict:
-            element_dict[super_family] = {family:[(header, seq)]}
+            element_dict[super_family] = {family: [(header, seq)]}
             file_names.append(super_family)
         else:
             family_dict = element_dict[super_family]
@@ -129,7 +199,3 @@ def fasta_splitter(big_fasta_file, dir_key = 'Super_Family', soy_key='Family', f
 
     split_fasta_writer(element_dict, file_name_editor, file_ext)
     return get_clean_filename
-
-def make_all_type_cons(fasta_file):
-    family_dirs = fasta_splitter(fasta_file)
-    # read files in each family and make a consensus of those files if are LTR elements

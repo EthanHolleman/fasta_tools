@@ -5,9 +5,6 @@ from fasta_writers import *
 from check_depends import *
 
 
-
-
-
 def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=False, rep_elements=True):
     '''
     takes fasta file, runs clustal omega then uses
@@ -27,7 +24,6 @@ def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=Fal
         con_elements = [element_tuples[index/2] for index in rep_elements]
 
     try:
-        print(con_elements)
         new_file = write_from_tuple_list(con_elements, output_name)
         print("file writen to " + output_name)
         embosser(clustalize(new_file, output_name), consensus_header, output_name)

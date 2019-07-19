@@ -68,5 +68,6 @@ def correct_1h1s_error(fasta_list):
                 current_seq = ''
         else:
             current_seq += line.strip()
+    seq_list.append(current_seq)
 
     return zip(header_list, seq_list)
