@@ -19,5 +19,7 @@ __all__ = [
     'clustalize',
     'embosser',
     'rename_emboss',
-    'fasta_splitter'
+    'fasta_splitter',
+    'one_consensus_method_to_rule_them_all',
+
 ]

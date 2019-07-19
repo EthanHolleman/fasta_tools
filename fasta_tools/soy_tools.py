@@ -4,7 +4,8 @@ from fasta_formater import *
 from consensus_tools import make_consensus
 import os
 
-allowed_fasta_types = ['fna', 'fasta', 'fa']
+ALLOWED_FASTAS = ['fna', 'fasta', 'fa']
+
 
 def parse_header_tuple(header):
     '''
@@ -12,6 +13,7 @@ def parse_header_tuple(header):
     for soy base headers
     '''
     return tuple(header.split(' '))
+
 
 def parse_header_dict(header, delim=' ', delim_key_value='='):
     '''
@@ -46,8 +48,10 @@ def identify_LTR(header):
     else:
         return False
 
+
 def get_clean_filename(filename):
     return os.path.basename(filename).split('.')[0]
+
 
 def get_clean_file_ext(filename):
     return os.path.basename(filename).split('.')[-1]
@@ -92,8 +96,6 @@ def seperate_types_supfamily_wide(family_folder, write_path='', verbose=True):
     '''
     write_log = []
     fam_files = os.listdir(family_folder)
-    #fam_files = [file for file in fam_files if get_clean_file_ext(file) in allowed_fasta_types]
-    # validates all files are of the fasta type
 
     for file in fam_files:
         file = os.path.join(family_folder, file)
@@ -104,6 +106,7 @@ def seperate_types_supfamily_wide(family_folder, write_path='', verbose=True):
         write_log.append(intacts)
 
     return write_log
+
 
 def make_consensus_name(og_file, keyword='consensus', new_path=None):
     base = os.path.basename(og_file)
@@ -125,12 +128,10 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
     '''
     con_log = []
     type_log = seperate_types_supfamily_wide(super_family_dir, super_family_dir, verbose=verbose)
-    print(type_log)
 
     for file in type_log:
         con_name = make_consensus_name(file)
         out_name = make_consensus_name(file, new_path=output_path)
-        print(out_name + '============================')
         if verbose == True:
             print('Making consensus of: {}'.format(file))
         make_consensus(file, output_name=out_name)
@@ -143,8 +144,6 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
 
     return con_log
 
-
-one_consensus_method_to_rule_them_all(super_family_dir='/media/ethan/Vault/Soy_fams/Gypsy', output_path='/home/ethan/Documents/test_con')
 
 def split_fasta_writer(element_dict, file_name_editor=False, file_ext='.fna'):
     '''
@@ -198,4 +197,3 @@ def fasta_splitter(big_fasta_file, dir_key = 'Super_Family', soy_key='Family', f
                 element_dict[super_family][family].append((header, seq))
 
     split_fasta_writer(element_dict, file_name_editor, file_ext)
-    return get_clean_filename
