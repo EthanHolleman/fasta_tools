@@ -1,5 +1,5 @@
 import os
-from fasta_writers import *
+#from fasta_writers import *
 
 def check_formating(fasta_file, overwrite=True):
     # TODO: Should check and try to correct carrot errors as this will effect 1h1s errors
