@@ -1,5 +1,6 @@
 import os
 import random
+import subprocess
 from fasta_readers import *
 from fasta_writers import *
 from check_depends import *
@@ -22,13 +23,14 @@ def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=Fal
         con_elements = get_random_elements(element_tuples)
     else:
         con_elements = [element_tuples[index/2] for index in rep_elements]
+        #  divide by two to avoid returning headers
 
     try:
         new_file = write_from_tuple_list(con_elements, output_name)
         print("file writen to " + output_name)
         embosser(clustalize(new_file, output_name), consensus_header, output_name)
 
-    except FileNotFoundError as e:
+    except (FileNotFoundError, OSError) as e:
         return e
 
 
@@ -54,12 +56,15 @@ def clustalize(rep_elements, output_name):
     '''
     runs clustal omega to create a clustalized file
     '''
-    clustal_command = 'clustalo -i {} -o {} -v --force'.format(rep_elements, output_name)
-    print(clustal_command)
-    os.system(clustal_command)
-
-    return output_name
-
+    #print(clustal_command)
+    #os.system(clustal_command)
+    try:
+        clustal_call = subprocess.call(['clustalo', 'i', rep_elements, '-o', output_name, '-v', '--force'])
+        if clustal_call < 0:
+            print('Clustal call to make: {} returned {}'.format(output_name, clustal_call))
+        return output_name
+    except OSError as e:
+        return e
 
 
 def embosser(clustalized_file, header, output_name):
@@ -68,8 +73,13 @@ def embosser(clustalized_file, header, output_name):
     clustalized file
     '''
     command = 'em_cons -sformat pearson -datafile EDNAFULL -sequence {} -outseq {} -snucleotide1'.format(clustalized_file, output_name)
-    os.system(command)
-    rename_emboss(header, output_name)
+    formated_command = command.split(' ')
+    try:
+        subprocess.call(formated_command)
+    except (FileNotFoundError, OSError) as e:
+        return e
+    #os.system(command)
+    #rename_emboss(header, output_name)
 
 
 def rename_emboss(header, embossed_file):

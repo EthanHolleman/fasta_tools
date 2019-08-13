@@ -4,7 +4,7 @@ from fasta_formater import *
 from consensus_tools import make_consensus
 import os
 
-ALLOWED_FASTAS = ['fna', 'fasta', 'fa']
+ALLOWED_FASTAS = ['fna', 'fasta', 'fa']  # allowed file extensions for methods parsing fasta files
 
 
 def parse_header_tuple(header):
@@ -35,6 +35,7 @@ def parse_header_dict(header, delim=' ', delim_key_value='='):
     dictionary['Reference'] += reference_info
 
     return dictionary
+
 
 def identify_LTR(header):
     '''
@@ -123,26 +124,37 @@ def make_consensus_name(og_file, keyword='consensus', new_path=None):
 
 def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, verbose=True, rm_seperated=True):
     '''
-    given a directory of a superfamily, seperates each family into solo and intact
+    given a directory of a collection of superfamily fasta files, seperates
+    each family into solo and intact
     elements, then creates a consensus for each of those element types.
     '''
     con_log = []
+    error_log = {}
     type_log = seperate_types_supfamily_wide(super_family_dir, super_family_dir, verbose=verbose)
-
+    #  type_log is the list of solo / intact element families created from fasta files
+    #  at the faimly level. This means that the original superfamily fasta should have
+    #  already been split using fasta_slitter methods
     for file in type_log:
         con_name = make_consensus_name(file)
         out_name = make_consensus_name(file, new_path=output_path)
-        if verbose == True:
+        if verbose is True:
             print('Making consensus of: {}'.format(file))
-        make_consensus(file, output_name=out_name)
+        diagnostic = make_consensus(file, output_name=out_name)  # writes consensus, output will be
+        #  true if successful or FileNotFoundError or  OSError if fails
+        #  failures are logged as dictionary; key == file value == list
+        #  with last item being the error object
+
+        if diagnostic is not True:
+            error_log[file] = [con_name, out_name, diagnostic]
+            continue
 
         con_log.append(con_name)
         check_formating(con)
 
-        if rm_seperated is True:
+        if rm_seperated is True:  # removes the non consensus file is value is true
             os.remove(file)
 
-    return con_log
+    return tuple(con_log, error_log)
 
 
 def split_fasta_writer(element_dict, file_name_editor=False, file_ext='.fna'):
@@ -160,7 +172,7 @@ def split_fasta_writer(element_dict, file_name_editor=False, file_ext='.fna'):
         except FileExistsError:
             print('Dir exists')
 
-        for family in element_dict[super_family]: # access a given super family
+        for family in element_dict[super_family]:  # access a given super family
             if file_name_editor is not False:  # apply file editing function if provided
                 file_name = file_name_editor(family)
             else:
@@ -169,7 +181,7 @@ def split_fasta_writer(element_dict, file_name_editor=False, file_ext='.fna'):
             write_from_tuple_list(element_dict[super_family][family], file_name)
 
 
-def fasta_splitter(big_fasta_file, dir_key = 'Super_Family', soy_key='Family', file_name_editor=False, file_ext='.fna'):
+def fasta_splitter(big_fasta_file, dir_key='Super_Family', soy_key='Family', file_name_editor=False, file_ext='.fna'):
     '''
     Method that splits a large fasta file containing many different types of elements into
     many fasta files each with one type of element. Splitting is done based on content of the header and so
