@@ -70,9 +70,7 @@ def clustalize(rep_elements, output_path):
     #print(clustal_command)
     #os.system(clustal_command)
     try:
-        clustal_call = subprocess.call(['clustalo', '-i', rep_elements, '-o', output_path, '-v', '--force'])
-        if clustal_call < 0:
-            print('Clustal call to make: {} returned {}'.format(output_path, clustal_call))
+        subprocess.call(['clustalo', '-i', rep_elements, '-o', output_path, '-v', '--force'])
         return output_path
     except OSError as e:
         return e
@@ -100,6 +98,7 @@ def embosser(clustalized_file, output_path):
     formated_command = command.split(' ')
     try:
         subprocess.call(formated_command)
+        return 1
     except (FileNotFoundError, OSError) as e:
         return e
     #os.system(command)
