@@ -1,10 +1,12 @@
-#sys.path.append('./fasta_tools')
+# sys.path.append('./fasta_tools')
 
 from .version import __version__
 from .fasta_formater import *
 from .fasta_getters import *
 from .fasta_writers import *
 from .check_depends import *
+from .consensus_tools import *
+from soy_tools import *
 
 __all__ = [
     'write_from_list',
