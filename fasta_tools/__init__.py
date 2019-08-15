@@ -1,3 +1,5 @@
+#sys.path.append('./fasta_tools')
+
 from .version import __version__
 from .fasta_formater import *
 from .fasta_getters import *
@@ -21,5 +23,5 @@ __all__ = [
     'rename_emboss',
     'fasta_splitter',
     'one_consensus_method_to_rule_them_all',
-
+    'fasta_getters'
 ]

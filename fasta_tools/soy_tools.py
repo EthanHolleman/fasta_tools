@@ -83,8 +83,10 @@ def seperate_types(single_element_fasta, write_path='', file_ext='.fna'):
     solo_path = os.path.join(write_path, filename + ind[0] + file_ext)
     intact_path = os.path.join(write_path, filename + ind[1] + file_ext)
 
-    write_from_tuple_list(solos, solo_path)
-    write_from_tuple_list(intacts, intact_path)
+    if len(solos) >= 1:  # ensures if only one type do not try to write empty file
+        write_from_tuple_list(solos, solo_path)
+    if len(intacts) >= 1:
+        write_from_tuple_list(intacts, intact_path)
 
     return tuple([solo_path, intact_path])
 
@@ -139,10 +141,16 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
         out_name = make_consensus_name(file, new_path=output_path)
         if verbose is True:
             print('Making consensus of: {}'.format(file))
-        diagnostic = make_consensus(file, output_name=out_name)  # writes consensus, output will be
+        if verify_consensus_ready(file) is True:
+            diagnostic = make_consensus(file, output_name=out_name)
+        # writes consensus, output will be
         #  true if successful or FileNotFoundError or  OSError if fails
         #  failures are logged as dictionary; key == file value == list
         #  with last item being the error object
+
+        # verify consensus ensures consensus can be made of the file by testing
+        # if has more than one entry. If only one then a file same as original
+        # but renamed according to the type is written by seperate_types_supfamily_wide
 
         if diagnostic is not True:
             error_log[file] = [con_name, out_name, diagnostic]
