@@ -1,8 +1,10 @@
-from fasta_writers import *
-from fasta_readers import *
-from fasta_formater import *
-from consensus_tools import make_consensus
 import os
+
+from fasta_tools import fasta_writers
+from fasta_tools import fasta_readers
+from fasta_tools import fasta_formater
+from fasta_tools import consensus_tools
+
 
 ALLOWED_FASTAS = ['fna', 'fasta', 'fa']  # allowed file extensions for methods parsing fasta files
 
