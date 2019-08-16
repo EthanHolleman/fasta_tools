@@ -14,7 +14,7 @@ from fasta_tools.fasta_writers import *
 #from fasta_tools import check_depends
 
 
-def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=False, rep_elements=True):
+def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=False):
     '''
     takes fasta file, runs clustal omega then uses
     embosser to make a consensus sequence returned
@@ -23,18 +23,17 @@ def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=Fal
     a defualt name.
     '''
     check_dependencies()
-
     element_tuples = read_as_tuples(str(fasta_file))   # passes fasta as list to get list, returns list of tuples
 
     con_elements = []
-    if rep_elements is True:
+    if len(element_tuples) >= 10:
         con_elements = get_random_elements(element_tuples)
     else:
-        con_elements = [element_tuples[index/2] for index in rep_elements]
+        con_elements = element_tuples
         #  divide by two to avoid returning headers
-
     try:
-        new_file = write_from_tuple_list(con_elements, output_name)
+        print(con_elements)
+        new_file = write_from_tuple_list(con_elements, output_path)
         # new_file is overwritten as location of consensus seq
         print("file writen to " + output_name)
         embosser(clustalize(new_file, output_path), consensus_header, output_path)
@@ -42,6 +41,7 @@ def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=Fal
 
     except (FileNotFoundError, OSError) as e:
         return e
+
 
 
 def get_random_elements(elements):
@@ -131,3 +131,6 @@ def format_consensus(consensus_file):
                 con.write('> ' + consensus_file + '\n')
             else:
                 con.write(line.strip())
+
+
+make_consensus('solo_short.fasta')

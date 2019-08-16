@@ -8,7 +8,8 @@ def read_as_tuples(fasta_file):
     try:
         with open(fasta_file) as fasta:
             fasta = fasta.readlines()
-            return [tuple(fasta[i:i + 2]) for i in range(0, len(fasta), 2)]
+            fasta = [x.strip() for x in fasta]
+            return [tuple(fasta[i:i + 1]) for i in range(0, len(fasta), 2)]
     except FileNotFoundError as e:
         return e
 
