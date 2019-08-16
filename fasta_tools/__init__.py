@@ -17,6 +17,7 @@ __all__ = [
     'write_from_dictionary',
     'write_from_tuple_list',
     'check_dependencies',
+    'read_as_tuples'
     'make_consensus',
     'get_entry',
     'get_random_elements',
