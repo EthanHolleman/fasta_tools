@@ -44,7 +44,6 @@ class Test_Embosser(unittest.TestCase):
             self.assertEqual(emboss_result, FileNotFoundError)
 
 
-
 class Test_Make_Consensus(unittest.TestCase):
     pass
 
