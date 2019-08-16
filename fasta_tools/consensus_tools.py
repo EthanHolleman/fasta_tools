@@ -1,7 +1,7 @@
 import os
 import random
 import subprocess
-from check_depends import check_dependencies
+from fasta_tools.check_depends import check_dependencies
 from fasta_tools.fasta_getters import *
 from fasta_tools.fasta_readers import read_as_tuples
 from fasta_tools.fasta_writers import *
@@ -36,7 +36,7 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
         new_file = write_from_tuple_list(con_elements, output_path)
         # new_file is overwritten as location of consensus seq
         print("file writen to " + output_name)
-        embosser(clustalize(new_file, output_path), consensus_header, output_path)
+        embosser(clustalize(new_file, output_path), output_path)
         return True
 
     except (FileNotFoundError, OSError) as e:
