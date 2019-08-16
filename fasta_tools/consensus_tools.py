@@ -2,7 +2,7 @@ import os
 import random
 import subprocess
 from check_depends import check_dependencies
-from fasta_tools import fasta_getters
+from fasta_tools.fasta_getters import *
 from fasta_tools import fasta_writers
 from fasta_tools import fasta_readers
 
