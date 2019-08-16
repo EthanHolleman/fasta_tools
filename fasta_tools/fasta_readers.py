@@ -7,11 +7,14 @@ def read_as_tuples(fasta_file):
     '''
     try:
         with open(fasta_file) as fasta:
+            n = 2
             fasta = fasta.readlines()
             fasta = [x.strip() for x in fasta]
-            return [tuple(fasta[i:i + 1]) for i in range(0, len(fasta), 2)]
+            return [tuple(fasta[i * n:(i + 1) * n]) for i in range((len(fasta) + n - 1) // n )][0:-1]
     except FileNotFoundError as e:
         return e
+
+print(read_as_tuples('/home/ethan/Documents/github/fasta_tools/fasta_tools/solo_short.fasta'))
 
 def read_as_list():
     pass
