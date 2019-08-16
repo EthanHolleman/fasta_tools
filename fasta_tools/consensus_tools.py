@@ -35,7 +35,7 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
         print(con_elements)
         new_file = write_from_tuple_list(con_elements, output_path)
         # new_file is overwritten as location of consensus seq
-        print("file writen to " + output_name)
+        print("file writen to " + output_path)
         embosser(clustalize(new_file, output_path), output_path)
         return True
 
