@@ -131,6 +131,3 @@ def format_consensus(consensus_file):
                 con.write('> ' + consensus_file + '\n')
             else:
                 con.write(line.strip())
-
-
-make_consensus('solo_short.fasta')
