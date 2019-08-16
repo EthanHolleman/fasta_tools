@@ -1,9 +1,9 @@
 import os
 
-from fasta_tools import fasta_writers
-from fasta_tools import fasta_readers
-from fasta_tools import fasta_formater
-from fasta_tools import consensus_tools
+from fasta_tools.check_depends import check_dependencies
+from fasta_tools.fasta_getters import *
+from fasta_tools.fasta_readers import read_as_tuples
+from fasta_tools.fasta_writers import *
 
 
 ALLOWED_FASTAS = ['fna', 'fasta', 'fa']  # allowed file extensions for methods parsing fasta files
@@ -37,7 +37,6 @@ def parse_header_dict(header, delim=' ', delim_key_value='='):
     dictionary['Reference'] += reference_info
 
     return dictionary
-
 
 def identify_LTR(header):
     '''

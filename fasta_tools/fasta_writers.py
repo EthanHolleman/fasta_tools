@@ -19,8 +19,6 @@ def write_from_tuple_list(fasta_tuples, output_name='tuples.fna'):
     ''' writes fasta file from list tuples, [(header, seq)] '''
     with open(output_name, 'w') as out:
         for tuple in fasta_tuples:
-            print(tuple)
-            print('this is the tuple')
             header, seq = tuple
             out.write(header.strip() + '\n' + seq.strip() + '\n')
 

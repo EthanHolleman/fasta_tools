@@ -9,7 +9,8 @@ GOLD_CONTENT = '>One\nATGC\n>Two\nATGTCATCG\n>Three\nATGTAT\n'
 TEMP_PATH = 'temp.fasta'
 
 LIST = GOLD_CONTENT.split('\n')
-TUPLES = [tuple(['>One', 'ATGC']), tuple(['>Two', '>ATGTCATCG']), tuple(['>hree', 'ATGTAT'])]
+TUPLES = [tuple(['>One', 'ATGC']), tuple(
+    ['>Two', '>ATGTCATCG']), tuple(['>hree', 'ATGTAT'])]
 
 
 class Test_Writers(unittest.TestCase):
@@ -26,7 +27,7 @@ class Test_Writers(unittest.TestCase):
         write_from_list(fasta_list=LIST, output_name=TEMP_PATH)
         with open(TEMP_PATH, 'r') as temp:
             read = ''.join(temp.readlines())
-            #print(read)
+            # print(read)
             self.assertEqual(read, GOLD_CONTENT)
 
     def test_tuples(self):

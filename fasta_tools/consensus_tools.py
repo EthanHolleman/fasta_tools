@@ -23,7 +23,8 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
     a defualt name.
     '''
     check_dependencies()
-    element_tuples = read_as_tuples(str(fasta_file))   # passes fasta as list to get list, returns list of tuples
+    # passes fasta as list to get list, returns list of tuples
+    element_tuples = read_as_tuples(str(fasta_file))
 
     con_elements = []
     if len(element_tuples) >= 10:
@@ -32,7 +33,6 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
         con_elements = element_tuples
         #  divide by two to avoid returning headers
     try:
-        print(con_elements)
         new_file = write_from_tuple_list(con_elements, output_path)
         # new_file is overwritten as location of consensus seq
         print("file writen to " + output_path)
@@ -41,7 +41,6 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
 
     except (FileNotFoundError, OSError) as e:
         return e
-
 
 
 def get_random_elements(elements):
@@ -53,10 +52,11 @@ def get_random_elements(elements):
     max_range = 0
     if len(elements) < 20:
         max_range = len(elements)
-    else: max_range = 20
+    else:
+        max_range = 20
 
     for i in range(0, max_range):
-        rand = random.randint(0, len(elements)-1)
+        rand = random.randint(0, len(elements) - 1)
         rand_elements.append(elements[rand])
 
     return rand_elements
@@ -67,13 +67,15 @@ def clustalize(rep_elements, output_path):
     runs clustal omega to create a clustalized file. Output path should include
     the filename.
     '''
-    #print(clustal_command)
-    #os.system(clustal_command)
+    # print(clustal_command)
+    # os.system(clustal_command)
     try:
-        subprocess.call(['clustalo', '-i', rep_elements, '-o', output_path, '-v', '--force'])
+        subprocess.call(['clustalo', '-i', rep_elements,
+                         '-o', output_path, '-v', '--force'])
         return output_path
     except OSError as e:
         return e
+
 
 def verify_consensus_ready(fasta_file):
     try:
@@ -94,14 +96,15 @@ def embosser(clustalized_file, output_path):
     runs embosse to create a consensus file of a previously
     clustalized file
     '''
-    command = 'em_cons -sformat pearson -datafile EDNAFULL -sequence {} -outseq {} -snucleotide1 -name {}'.format(clustalized_file, output_path, os.path.basename(output_path))
+    command = 'em_cons -sformat pearson -datafile EDNAFULL -sequence {} -outseq {} -snucleotide1 -name {}'.format(
+        clustalized_file, output_path, os.path.basename(output_path))
     formated_command = command.split(' ')
     try:
         subprocess.call(formated_command)
         return 1
     except (FileNotFoundError, OSError) as e:
         return e
-    #os.system(command)
+    # os.system(command)
     #rename_emboss(header, output_name)
 
 
