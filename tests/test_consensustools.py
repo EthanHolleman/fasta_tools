@@ -9,7 +9,6 @@ TEMP_OUT = 'temp.fasta'
 
 
 class Test_Clustalo(unittest.TestCase):
-
     # @mock.patch('consensus_tools.subprocess')
     def test_call(self):
         clustal_correct = ['clustalo', '-i',

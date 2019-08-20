@@ -10,7 +10,7 @@ TEMP_PATH = 'temp.fasta'
 
 LIST = GOLD_CONTENT.split('\n')
 TUPLES = [tuple(['>One', 'ATGC']), tuple(
-    ['>Two', '>ATGTCATCG']), tuple(['>hree', 'ATGTAT'])]
+    ['>Two', '>ATGTCATCG']), tuple(['>Three', 'ATGTAT'])]
 
 
 class Test_Writers(unittest.TestCase):

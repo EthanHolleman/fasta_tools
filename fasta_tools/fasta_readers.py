@@ -13,7 +13,6 @@ def read_as_tuples(fasta_file):
     except FileNotFoundError as e:
         return e
 
-print(read_as_tuples('/media/ethan/Vault/Soy_fams/Gypsy/Gmr128SOLO.fna'))
 
 def read_as_list():
     pass

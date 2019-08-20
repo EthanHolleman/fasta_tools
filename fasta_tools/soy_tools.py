@@ -144,7 +144,7 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
     #  at the faimly level. This means that the original superfamily fasta should have
     #  already been split using fasta_slitter methods
     for file in type_log:
-        diagnostic = None
+        diagnostic = True
         check_formating(file)
         con_name = make_consensus_name(file)
         out_name = make_consensus_name(file, new_path=output_path)
@@ -174,8 +174,7 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
         check_formating(out_name)
 
         if rm_seperated is True:  # removes the non consensus file is value is true
-            #os.remove(file)
-            print('\n')
+            os.remove(file)
 
     return tuple([con_log, error_log])
 
@@ -232,5 +231,3 @@ def fasta_splitter(big_fasta_file, dir_key='Super_Family', soy_key='Family', fil
                 element_dict[super_family][family].append((header, seq))
 
     split_fasta_writer(element_dict, file_name_editor, file_ext)
-
-#one_consensus_method_to_rule_them_all(super_family_dir='/media/ethan/Vault/Soy_fams/Gypsy', output_path='/media/ethan/Vault/Gypsy_Con_V2', rm_seperated=True)
