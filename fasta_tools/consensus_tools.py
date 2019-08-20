@@ -25,8 +25,6 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
     check_dependencies()
     # passes fasta as list to get list, returns list of tuples
     element_tuples = read_as_tuples(fasta_file)
-    print(element_tuples)
-    print('above are the element tuples')
 
     con_elements = []
     if len(element_tuples) >= 10:
@@ -106,7 +104,7 @@ def verify_consensus_ready(fasta_file):
         lines = []
         with open(fasta_file, 'r') as fasta:
             lines = fasta.readlines()
-        if len(lines) >= 2:  # indicating only one entry will cause issues with consensus
+        if len(lines) >= 4:  # indicating only one entry will cause issues with consensus
             return True
         else:
             return False
