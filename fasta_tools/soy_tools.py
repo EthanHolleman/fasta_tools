@@ -158,8 +158,8 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
         #  with last item being the error object
 
         # verify consensus ensures consensus can be made of the file by testing
-        # if has more than one entry. If only one then a file same as original
-        # but renamed according to the type is written by seperate_types_supfamily_wide
+        # if has more than one entry.
+
 
         if diagnostic is not True:
             error_log[file] = [con_name, out_name, diagnostic]
@@ -173,7 +173,7 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
             #os.remove(file)
             print('\n')
 
-    return tuple(con_log, error_log)
+    return tuple([con_log, error_log])
 
 
 def split_fasta_writer(element_dict, file_name_editor=False, file_ext='.fna'):

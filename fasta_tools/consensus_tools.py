@@ -114,7 +114,6 @@ def verify_consensus_ready(fasta_file):
         print('{} does not exist'.format(fasta_file))
         return False
 
-print(verify_consensus_ready('/media/ethan/Vault/Soy_fams/Gypsy/Gmr128SOLO.fna'))
 
 def embosser(clustalized_file, output_path):
     '''
