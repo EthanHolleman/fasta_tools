@@ -144,6 +144,7 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
     #  at the faimly level. This means that the original superfamily fasta should have
     #  already been split using fasta_slitter methods
     for file in type_log:
+        diagnostic = None
         check_formating(file)
         con_name = make_consensus_name(file)
         out_name = make_consensus_name(file, new_path=output_path)
