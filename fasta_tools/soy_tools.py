@@ -4,7 +4,8 @@ from fasta_tools.check_depends import check_dependencies
 from fasta_tools.fasta_getters import *
 from fasta_tools.fasta_readers import read_as_tuples
 from fasta_tools.fasta_writers import *
-
+from fasta_tools.fasta_formater import check_formating
+from fasta_tools.consensus_tools import *
 
 ALLOWED_FASTAS = ['fna', 'fasta', 'fa']  # allowed file extensions for methods parsing fasta files
 
@@ -66,6 +67,7 @@ def seperate_types(single_element_fasta, write_path='', file_ext='.fna'):
     intacts. Important for creating consensus sequences to feed to transposer. New files are named
     as family name_status.fna and file names are returned as a tuple
     '''
+    written_files = []
     tuples = read_as_tuples(single_element_fasta)
     solos, intacts = [], []
     ind = ('SOLO', 'INTACT')
@@ -86,10 +88,12 @@ def seperate_types(single_element_fasta, write_path='', file_ext='.fna'):
 
     if len(solos) >= 1:  # ensures if only one type do not try to write empty file
         write_from_tuple_list(solos, solo_path)
+        written_files.append(solo_path)
     if len(intacts) >= 1:
         write_from_tuple_list(intacts, intact_path)
+        written_files.append(intact_path)
 
-    return tuple([solo_path, intact_path])
+    return tuple(written_files)
 
 
 def seperate_types_supfamily_wide(family_folder, write_path='', verbose=True):
@@ -105,9 +109,9 @@ def seperate_types_supfamily_wide(family_folder, write_path='', verbose=True):
         file = os.path.join(family_folder, file)
         if verbose is True:
             print('Seperating {}'.format(file))
-        solos, intacts = seperate_types(file, write_path)
-        write_log.append(solos)
-        write_log.append(intacts)
+        written_files = seperate_types(file, write_path)
+        for file in written_files:
+            write_log.append(file)
 
     return write_log
 
@@ -138,12 +142,16 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
     #  at the faimly level. This means that the original superfamily fasta should have
     #  already been split using fasta_slitter methods
     for file in type_log:
+        check_formating(file)
         con_name = make_consensus_name(file)
         out_name = make_consensus_name(file, new_path=output_path)
         if verbose is True:
             print('Making consensus of: {}'.format(file))
         if verify_consensus_ready(file) is True:
-            diagnostic = make_consensus(file, output_name=out_name)
+            diagnostic = make_consensus(file, output_path=out_name)
+        else:
+            single_seq = read_as_tuples(file)
+            write_from_tuple_list(single_seq, out_name)
         # writes consensus, output will be
         #  true if successful or FileNotFoundError or  OSError if fails
         #  failures are logged as dictionary; key == file value == list
@@ -155,13 +163,15 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
 
         if diagnostic is not True:
             error_log[file] = [con_name, out_name, diagnostic]
+            print(diagnostic)
             continue
 
-        con_log.append(con_name)
-        check_formating(con)
+        con_log.append(out_name)
+        check_formating(out_name)
 
         if rm_seperated is True:  # removes the non consensus file is value is true
-            os.remove(file)
+            #os.remove(file)
+            print('\n')
 
     return tuple(con_log, error_log)
 
@@ -177,7 +187,7 @@ def split_fasta_writer(element_dict, file_name_editor=False, file_ext='.fna'):
     for super_family in element_dict:
         try:
             os.mkdir(super_family)
-            file_structure[super_family] = []
+            #file_structure[super_family] = []
         except FileExistsError:
             print('Dir exists')
 
@@ -218,3 +228,5 @@ def fasta_splitter(big_fasta_file, dir_key='Super_Family', soy_key='Family', fil
                 element_dict[super_family][family].append((header, seq))
 
     split_fasta_writer(element_dict, file_name_editor, file_ext)
+
+#one_consensus_method_to_rule_them_all(super_family_dir='/media/ethan/Vault/Soy_fams/Gypsy', output_path='/media/ethan/Vault/Gypsy_Con_V2', rm_seperated=True)

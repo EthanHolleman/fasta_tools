@@ -24,7 +24,9 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
     '''
     check_dependencies()
     # passes fasta as list to get list, returns list of tuples
-    element_tuples = read_as_tuples(str(fasta_file))
+    element_tuples = read_as_tuples(fasta_file)
+    print(element_tuples)
+    print('above are the element tuples')
 
     con_elements = []
     if len(element_tuples) >= 10:
@@ -34,14 +36,16 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
         #  divide by two to avoid returning headers
     try:
         new_file = write_from_tuple_list(con_elements, output_path)
+        print('new file written')
         # new_file is overwritten as location of consensus seq
         print("file writen to " + output_path)
-        embosser(clustalize(new_file, output_path), output_path)
+        clustal_file = clustalize(new_file, output_path)
+        embosser(clustal_file, output_path)
+
         return True
 
     except (FileNotFoundError, OSError) as e:
         return e
-
 
 def get_random_elements(elements):
     '''
@@ -76,6 +80,26 @@ def clustalize(rep_elements, output_path):
     except OSError as e:
         return e
 
+def remove_high_n(fasta_file, threshold=0.3):
+    '''
+    Parses a fasta file and writes a new fasta with only the elements that contain
+    lower % of Ns then the given threshold. If overwrite is specified will over
+    write the original file. If only one seq is present then will not rewrite
+    even if sequence does reach the n threshold.
+    '''
+    fasta_file_tuples = read_as_tuples(fasta_file)
+    seq_removed = 0
+    if len(fasta_file) > 1:
+        verified_entries = []
+        for header, seq in fasta_file_tuples:
+            if seq.count('N') / len(seq) >= 0.4:
+                verified_entries.append(tuple([header, seq]))
+            else:
+                seq_removed += 1
+        print('{} seqs removed from {}'.format(seq_removed, fasta_file))
+        write_from_tuple_list(verified_entries, output_name=fasta_file)
+
+    return fasta_file  # must return the filename so can be intgrated
 
 def verify_consensus_ready(fasta_file):
     try:
@@ -90,13 +114,14 @@ def verify_consensus_ready(fasta_file):
         print('{} does not exist'.format(fasta_file))
         return False
 
+print(verify_consensus_ready('/media/ethan/Vault/Soy_fams/Gypsy/Gmr128SOLO.fna'))
 
 def embosser(clustalized_file, output_path):
     '''
     runs embosse to create a consensus file of a previously
     clustalized file
     '''
-    command = 'em_cons -sformat pearson -datafile EDNAFULL -sequence {} -outseq {} -snucleotide1 -name {}'.format(
+    command = 'em_cons -sformat pearson -datafile EDNAFULL -plurality 0.3 -sequence {} -outseq {} -snucleotide1 -name {}'.format(
         clustalized_file, output_path, os.path.basename(output_path))
     formated_command = command.split(' ')
     try:
