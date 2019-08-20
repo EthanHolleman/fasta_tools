@@ -134,6 +134,8 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
     given a directory of a collection of superfamily fasta files, seperates
     each family into solo and intact
     elements, then creates a consensus for each of those element types.
+    WARNING: Currently the output directory cannot be a sub directory of the
+    superfamily directory. Fix to this coming in the future.
     '''
     con_log = []
     error_log = {}
@@ -148,6 +150,7 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
         if verbose is True:
             print('Making consensus of: {}'.format(file))
         if verify_consensus_ready(file) is True:
+            print('File can be alligned')
             diagnostic = make_consensus(file, output_path=out_name)
         else:
             single_seq = read_as_tuples(file)
