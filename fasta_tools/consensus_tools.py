@@ -52,10 +52,10 @@ def get_random_elements(elements):
     '''
     rand_elements = []
     max_range = 0
-    if len(elements) < 20:
+    if len(elements) < 50:
         max_range = len(elements)
     else:
-        max_range = 20
+        max_range = 50
 
     for i in range(0, max_range):
         rand = random.randint(0, len(elements) - 1)
