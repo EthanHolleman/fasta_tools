@@ -99,5 +99,3 @@ def correct_1h1s_error(fasta_list):
     seq_list.append(current_seq)
 
     return zip(header_list, seq_list)
-
-check_formating('/home/ethan/Documents/Gypsy_consensus/consensus_Gmr1INTACT.fna')
