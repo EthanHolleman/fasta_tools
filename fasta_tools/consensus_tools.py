@@ -118,7 +118,7 @@ def embosser(clustalized_file, output_path):
     runs embosse to create a consensus file of a previously
     clustalized file
     '''
-    command = 'em_cons -sformat pearson -datafile EDNAFULL -plurality 0.3 -sequence {} -outseq {} -snucleotide1 -name {}'.format(
+    command = 'em_cons -datafile EDNAFULL -identity 2 -plurality 0.4 -sequence {} -outseq {} -snucleotide1 -name {}'.format(
         clustalized_file, output_path, os.path.basename(output_path))
     formated_command = command.split(' ')
     try:
