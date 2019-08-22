@@ -171,44 +171,6 @@ def one_consensus_method_to_rule_them_all(super_family_dir, output_path=None, ve
 
     return tuple([con_log, error_log])
 
-def average_consensus(super_family_dir, iterations=5, output_path=None, verbose=True, rm_seperated=True):
-    '''
-    ok so runs the consensus and stores each in a few directory
-    then need to cat the files together with the same name in each directory
-    then need to run consensus only on those cat files.
-    '''
-    con_log, error_log = [], []
-    temp_dirs = []
-    cat_log = []
-    for iter in range(0, iterations):
-        temp_dir = os.path.join(output_path, 'iteration_{}'.format(iter))
-        temp_dirs.append(temp_dir)
-        if os.path.isdir(temp_dir) is False:
-            os.mkdir(temp_dir)
-        con_log, error_log = one_consensus_method_to_rule_them_all(super_family_dir, temp_dir)
-
-    base_con_log = [os.path.basename(file) for file in con_log]
-
-    for base in base_con_log:
-
-        paths = [os.path.join(temp_dir, base) for temp_dir in temp_dirs]
-        # creates list of one file in each of the temp directories
-        final_output = os.path.join(output_path, base)
-        cat_log.append(final_output)
-        with open(final_output) as fo:
-            for path in paths:
-                with open(path, 'rb') as path:
-                    shutil.copyfileobj(path, fo)
-
-    for cat in cat_log:
-        make_consensus(cat, # where to put it here)
-
-    # need to create the output files names
-    # files exist in many dirc but have the same name so need to get the base
-    # now that we have the base name in loop create list of base + each
-    # of the temp directory names
-    # finally write everything to the new output directory
-
 
 def split_fasta_writer(element_dict, file_name_editor=False, file_ext='.fna'):
     '''
