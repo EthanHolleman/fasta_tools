@@ -1,20 +1,18 @@
 import os
+import sys
 import random
 import subprocess
+
+import numpy as np
+from fasta_tools.fasta_formater import check_formating
 from fasta_tools.check_depends import check_dependencies
 from fasta_tools.fasta_getters import *
 from fasta_tools.fasta_readers import read_as_tuples
 from fasta_tools.fasta_writers import *
-
-#from fasta_tools.fasta_tools import fasta_getters
-#from fasta_tools.fasta_tools import fasta_writers
-#from fasta_tools.fasta_tools import fasta_readers
-#from fasta_getters import *
-#from fasta_tools import fasta_writers
-#from fasta_tools import check_depends
+#from fasta_tools.fasta_formater import sub_fasta
 
 
-def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=False):
+def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=False, min_elements=10, n=20):
     '''
     takes fasta file, runs clustal omega then uses
     embosser to make a consensus sequence returned
@@ -23,12 +21,13 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
     a defualt name.
     '''
     check_dependencies()
+    check_formating(fasta_file)
     # passes fasta as list to get list, returns list of tuples
     element_tuples = read_as_tuples(fasta_file)
 
     con_elements = []
-    if len(element_tuples) >= 10:
-        con_elements = get_random_elements(element_tuples)
+    if len(element_tuples) >= min_elements:
+        con_elements = get_random_elements(element_tuples, n)
     else:
         con_elements = element_tuples
         #  divide by two to avoid returning headers
@@ -45,23 +44,29 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
     except (FileNotFoundError, OSError) as e:
         return e
 
-def get_random_elements(elements):
+def get_random_elements(elements, n=20):
     '''
-    selects 10 random elements of the family to make fasta file of
-    elements should be of one family
+    Uses random choice without replacement to pick n indexes of the elements
+    list. Elements at these indexes are then returned as a new list.
     '''
-    rand_elements = []
-    max_range = 0
-    if len(elements) < 50:
-        max_range = len(elements)
+    n = verify_n(len(elements), n)
+    choices = np.random.choice(len(elements), n, replace=False).tolist()
+    return [elements[i] for i in choices]
+
+
+def verify_n(len_elements, n, default_val=20):
+    '''
+    Checks to ensure that n < number of elements in the tuple list. If false
+    then will return default val if n > default if this is also false then
+    will return the length of the list of elements.
+    '''
+    if n > len_elements:
+        if len_elements < default_val:
+            return len_elements
+        else:
+            return default_val
     else:
-        max_range = 50
-
-    for i in range(0, max_range):
-        rand = random.randint(0, len(elements) - 1)
-        rand_elements.append(elements[rand])
-
-    return rand_elements
+        return n
 
 
 def clustalize(rep_elements, output_path):
@@ -77,6 +82,46 @@ def clustalize(rep_elements, output_path):
         return output_path
     except OSError as e:
         return e
+
+def iter_consensus(rep_elements, num_elements, output, extension='.fasta'):
+    '''
+    Creates multible small consensus sequences then makes a composite of all
+    of those consensus sequences. num_elements refers to the desired number of
+    elements in each sub fasta file. Must be at least 2 to allow for clustal
+    omega to work
+    '''
+    if num_elements < 2:
+        print('num_elements must be > 2')
+        sys.exit(1)
+
+    TEMP_DIR = os.path.join(os.getcwd, 'temp')
+    temp_dir = os.path.join(os.getcwd, TEMP_DIR)
+    if not os.path.exists(temp_dir):  # make temp dir if does not exist
+        os.mkdir(temp_dir)
+
+    split_result = sub_fasta(rep_elements, num_elements)
+    if split_result is 0:  # worked correctly
+        split_list = [os.path.join(temp_dir, file + extension) for file in os.listdir(temp_dir)]
+        # concat the temp file path with the names of all the files created
+        # by the sub_fasta method
+        for file in split_list:
+            make_consensus(file, output_path=file)  # make consensus of all files
+            # overwrite the file with the consensus to retain filenames
+            # filename that split makes does not have extension so need
+            # make sure that consensus methods will still work with that
+            # attempted to fix using extension and to make it work better
+            # with the cat command
+
+        try:
+            subprocess.call(['cat', '*{}'.format(extension), '>', output])
+        except (OSError, FileNotFoundError, IsADirectoryError):
+            return 1
+        make_consensus(output, output_path=output)
+        # make the final average consensus and overwrite the temp fasta of
+        # the average consensus sequences
+
+
+
 
 def remove_high_n(fasta_file, threshold=0.3):
     '''
