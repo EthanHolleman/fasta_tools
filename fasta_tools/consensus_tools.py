@@ -69,6 +69,7 @@ def verify_n(len_elements, n, default_val=20):
         return n
 
 
+
 def clustalize(rep_elements, output_path):
     '''
     runs clustal omega to create a clustalized file. Output path should include
@@ -78,7 +79,7 @@ def clustalize(rep_elements, output_path):
     # os.system(clustal_command)
     try:
         subprocess.call(['clustalo', '-i', rep_elements,
-                         '-o', output_path, '-v', '--force'])
+                         '-o', output_path, '-v', '--force', '--full', '--cluster-size=5'])
         return output_path
     except OSError as e:
         return e
@@ -163,15 +164,18 @@ def embosser(clustalized_file, output_path):
     runs embosse to create a consensus file of a previously
     clustalized file
     '''
-    command = 'em_cons -datafile EDNAFULL -identity 2 -plurality 0.4 -sequence {} -outseq {} -snucleotide1 -name {}'.format(
+    command = 'em_cons -datafile EDNAFULL -identity 1 -plurality 0.4 -sequence {} -outseq {} -snucleotide1 -name {}'.format(
         clustalized_file, output_path, os.path.basename(output_path))
+    #command = ['em_cons', '-datafile EDNAFULL', 'identity 2', '-plurality']
     formated_command = command.split(' ')
     try:
-        subprocess.call(formated_command)
+        print(formated_command)
+        #subprocess.call(formated_command, shell=True)
+        os.system(command)
         return 1
     except (FileNotFoundError, OSError) as e:
         return e
-    # os.system(command)
+    os.system(command)
     #rename_emboss(header, output_name)
 
 

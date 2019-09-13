@@ -5,8 +5,9 @@ from fasta_tools.fasta_readers import read_as_tuples
 
 def sub_fasta(fasta_path, wrap):
     # wrap should be the number of elements in each new file
+    #TODO make this work yo
     try:
-        subprocess.call(['split', '-l', wrap fasta_file])
+        subprocess.call(['split', '-l', 'wrap fasta_file'])
         return 0
     except OSError as e:
         return e
