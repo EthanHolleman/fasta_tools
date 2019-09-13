@@ -1,6 +1,7 @@
 import os
 import subprocess
 from fasta_tools.fasta_readers import read_as_tuples
+from fasta_tools.fasta_writers import write_fasta_from_zip
 
 
 def sub_fasta(fasta_path, wrap):
