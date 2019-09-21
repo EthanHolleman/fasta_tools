@@ -101,7 +101,7 @@ def iter_consensus(rep_elements, num_elements, output, extension='.fasta'):
         os.mkdir(temp_dir)
 
     split_result = sub_fasta(rep_elements, num_elements)
-    if split_result is 0:  # worked correctly
+    if split_result == 0:  # worked correctly
         split_list = [os.path.join(temp_dir, file + extension) for file in os.listdir(temp_dir)]
         # concat the temp file path with the names of all the files created
         # by the sub_fasta method
@@ -164,7 +164,7 @@ def embosser(clustalized_file, output_path):
     runs embosse to create a consensus file of a previously
     clustalized file
     '''
-    command = 'em_cons -datafile EDNAFULL -identity 1 -plurality 0.4 -sequence {} -outseq {} -snucleotide1 -name {}'.format(
+    command = 'em_cons -sequence {} -outseq {} -snucleotide1 -name {}'.format(
         clustalized_file, output_path, os.path.basename(output_path))
     #command = ['em_cons', '-datafile EDNAFULL', 'identity 2', '-plurality']
     formated_command = command.split(' ')
