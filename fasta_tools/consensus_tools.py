@@ -33,9 +33,7 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
         #  divide by two to avoid returning headers
     try:
         new_file = write_from_tuple_list(con_elements, output_path)
-        print('new file written')
         # new_file is overwritten as location of consensus seq
-        print("file writen to " + output_path)
         clustal_file = clustalize(new_file, output_path)
         embosser(clustal_file, output_path)
 
@@ -43,6 +41,7 @@ def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=Fal
 
     except (FileNotFoundError, OSError) as e:
         return e
+
 
 def get_random_elements(elements, n=20):
     '''
@@ -69,7 +68,6 @@ def verify_n(len_elements, n, default_val=20):
         return n
 
 
-
 def clustalize(rep_elements, output_path):
     '''
     runs clustal omega to create a clustalized file. Output path should include
@@ -83,6 +81,7 @@ def clustalize(rep_elements, output_path):
         return output_path
     except OSError as e:
         return e
+
 
 def iter_consensus(rep_elements, num_elements, output, extension='.fasta'):
     '''
@@ -102,11 +101,13 @@ def iter_consensus(rep_elements, num_elements, output, extension='.fasta'):
 
     split_result = sub_fasta(rep_elements, num_elements)
     if split_result == 0:  # worked correctly
-        split_list = [os.path.join(temp_dir, file + extension) for file in os.listdir(temp_dir)]
+        split_list = [os.path.join(temp_dir, file + extension)
+                      for file in os.listdir(temp_dir)]
         # concat the temp file path with the names of all the files created
         # by the sub_fasta method
         for file in split_list:
-            make_consensus(file, output_path=file)  # make consensus of all files
+            # make consensus of all files
+            make_consensus(file, output_path=file)
             # overwrite the file with the consensus to retain filenames
             # filename that split makes does not have extension so need
             # make sure that consensus methods will still work with that
@@ -120,8 +121,6 @@ def iter_consensus(rep_elements, num_elements, output, extension='.fasta'):
         make_consensus(output, output_path=output)
         # make the final average consensus and overwrite the temp fasta of
         # the average consensus sequences
-
-
 
 
 def remove_high_n(fasta_file, threshold=0.3):
@@ -144,6 +143,7 @@ def remove_high_n(fasta_file, threshold=0.3):
         write_from_tuple_list(verified_entries, output_name=fasta_file)
 
     return fasta_file  # must return the filename so can be intgrated
+
 
 def verify_consensus_ready(fasta_file):
     try:
@@ -169,7 +169,6 @@ def embosser(clustalized_file, output_path):
     #command = ['em_cons', '-datafile EDNAFULL', 'identity 2', '-plurality']
     formated_command = command.split(' ')
     try:
-        print(formated_command)
         #subprocess.call(formated_command, shell=True)
         os.system(command)
         return 1
