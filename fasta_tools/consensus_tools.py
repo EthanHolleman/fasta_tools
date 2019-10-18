@@ -11,6 +11,7 @@ from fasta_tools.fasta_readers import read_as_tuples
 from fasta_tools.fasta_writers import *
 #from fasta_tools.fasta_formater import sub_fasta
 
+FNULL = open(os.devnull, 'w')
 
 def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=False, min_elements=10, n=20):
     '''
@@ -75,9 +76,11 @@ def clustalize(rep_elements, output_path):
     '''
     # print(clustal_command)
     # os.system(clustal_command)
+
     try:
         subprocess.call(['clustalo', '-i', rep_elements,
-                         '-o', output_path, '-v', '--force', '--full', '--cluster-size=5'])
+                         '-o', output_path, '-v', '--force', '--full', '--cluster-size=5'],
+                         stdout=FNULL, stderr=subprocess.STDOUT)
         return output_path
     except OSError as e:
         return e
@@ -164,13 +167,13 @@ def embosser(clustalized_file, output_path):
     runs embosse to create a consensus file of a previously
     clustalized file
     '''
-    command = 'em_cons -sequence {} -outseq {} -snucleotide1 -name {}'.format(
-        clustalized_file, output_path, os.path.basename(output_path))
+    # convert this to subprocess call so can limit the output
+    command = ['em_cons', '-sequence', clustalized_file, '-outseq', output_path, '-snucleotide1', '-name', os.path.basename(output_path)]
     #command = ['em_cons', '-datafile EDNAFULL', 'identity 2', '-plurality']
-    formated_command = command.split(' ')
+
     try:
         #subprocess.call(formated_command, shell=True)
-        os.system(command)
+        subprocess.call(command, stdout=FNULL, stderr=subprocess.STDOUT)
         return 1
     except (FileNotFoundError, OSError) as e:
         return e
