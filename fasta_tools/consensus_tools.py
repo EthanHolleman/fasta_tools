@@ -209,6 +209,3 @@ def format_consensus(consensus_file):
                 con.write('> ' + consensus_file + '\n')
             else:
                 con.write(line.strip())
-
-
-make_consensus('/media/ethan/EH_DATA/TARP_Runs/Big_Run/GMR_3/Clusters/Gmr3SOLO')
