@@ -2,7 +2,7 @@ import os
 import sys
 import random
 import subprocess
-from multiprocessing import mp
+import multiprocessing as mp
 
 import numpy as np
 from fasta_tools.fasta_formater import check_formating
