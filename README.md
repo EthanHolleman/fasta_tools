@@ -1,5 +1,4 @@
 # fasta_tools
-### A personal python package to explore package making
 
 Python package built for downloading through github as a way to easily access fasta file related methods
 
@@ -14,7 +13,7 @@ To install the package, I'll probably be editing the fasta parsing/editing/readi
 pip uninstall fasta_tools
 ```
 
-docs.txt contains the pydoc generated documentation. 
+docs.txt contains the pydoc generated documentation. This way or may not be up to date but I'll do my best to keep it so.
 
 To use the functions in the conensus_tools.py file you should intall clustalo (clustal omega) and emboss.
 Ubuntu install commands

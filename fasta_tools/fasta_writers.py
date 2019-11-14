@@ -1,8 +1,11 @@
 def write_from_list(fasta_list, output_name):
     '''writes fasta file from list [header, seq, header,..]'''
-    with open(output_name, 'w') as out:
-        for line in fasta_list:
-            out.write(line.strip() + '\n')
+    try:
+        with open(output_name, 'w') as out:
+            for line in fasta_list:
+                out.write(line.strip() + '\n')
+    except FileNotFoundError as e:
+        return e
 
 
 def write_from_dictionary(fasta_dict, output_name):

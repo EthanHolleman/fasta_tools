@@ -1,5 +1,6 @@
 from shutil import which
 import sys
+
 current_dependencies = ['em_cons', 'clustalo']
 
 
@@ -9,3 +10,7 @@ def check_dependencies():
             print('This method requires {} to run, please install and then continue'.format(depend))
             sys.exit()
     return False
+
+def bash_install_clustalo():
+    os.system('sudo apt-get install clustalo')
+    

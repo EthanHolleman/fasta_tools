@@ -1,5 +1,17 @@
 import os
-from fasta_writers import *
+import subprocess
+from fasta_tools.fasta_readers import read_as_tuples
+from fasta_tools.fasta_writers import write_fasta_from_zip
+
+
+def sub_fasta(fasta_path, wrap):
+    # wrap should be the number of elements in each new file
+    #TODO make this work yo
+    try:
+        subprocess.call(['split', '-l', 'wrap fasta_file'])
+        return 0
+    except OSError as e:
+        return e
 
 def check_formating(fasta_file, overwrite=True):
     # TODO: Should check and try to correct carrot errors as this will effect 1h1s errors
