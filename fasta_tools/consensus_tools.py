@@ -1,8 +1,10 @@
 import os
 import random
+import multiprocessing as mp
 from fasta_readers import *
 from fasta_writers import *
 from check_depends import *
+
 
 
 def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=False, rep_elements=True):
@@ -54,7 +56,7 @@ def clustalize(rep_elements, output_name):
     '''
     runs clustal omega to create a clustalized file
     '''
-    clustal_command = 'clustalo -i {} -o {} -v --force'.format(rep_elements, output_name)
+    clustal_command = 'clustalo -i {} -o {} -v --force --threads {}'.format(rep_elements, output_name, mp.cpu_count())
     print(clustal_command)
     os.system(clustal_command)
 
