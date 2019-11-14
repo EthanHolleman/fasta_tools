@@ -13,7 +13,7 @@ from fasta_tools.fasta_writers import *
 #from fasta_tools.fasta_formater import sub_fasta
 
 
-def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=False, rep_elements=True):
+def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=False, rep_elements=True, min_elements=2, n=20):
     '''
     takes fasta file, runs clustal omega then uses
     embosser to make a consensus sequence returned
