@@ -2,6 +2,7 @@ import os
 import sys
 import random
 import subprocess
+from multiprocessing import mp
 
 import numpy as np
 from fasta_tools.fasta_formater import check_formating
@@ -73,12 +74,12 @@ def clustalize(rep_elements, output_path):
     runs clustal omega to create a clustalized file. Output path should include
     the filename.
     '''
-    clustal_command = 'clustalo -i {} -o {} -v --force --threads {}'.format(rep_elements, output_name, mp.cpu_count())
-    os.system(clustal_command)
 
+    threads = mp.cpu_count()
     try:
         subprocess.call(['clustalo', '-i', rep_elements,
-                         '-o', output_path, '-v', '--force', '--full', '--cluster-size=5'],
+                         '-o', output_path, '-v', '--force', '--full',
+                         '--cluster-size=5', '--threads', threads],
                          stdout=FNULL, stderr=subprocess.STDOUT)
         return output_path
     except OSError as e:
