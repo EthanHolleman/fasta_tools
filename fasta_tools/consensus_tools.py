@@ -3,8 +3,8 @@ import sys
 import random
 import subprocess
 import multiprocessing as mp
-
 import numpy as np
+
 from fasta_tools.fasta_formater import check_formating
 from fasta_tools.check_depends import check_dependencies
 from fasta_tools.fasta_getters import *
@@ -12,8 +12,9 @@ from fasta_tools.fasta_readers import read_as_tuples
 from fasta_tools.fasta_writers import *
 #from fasta_tools.fasta_formater import sub_fasta
 
+FNULL = open(os.devnull, 'w')
 
-def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=False, rep_elements=True, min_elements=2, n=20):
+def make_consensus(fasta_file, output_path='consensus.fna', consensus_header=False, rep_elements=True, min_elements=2, n=20):
     '''
     takes fasta file, runs clustal omega then uses
     embosser to make a consensus sequence returned
@@ -42,6 +43,7 @@ def make_consensus(fasta_file, output_name='consensus.fna', consensus_header=Fal
 
     except (FileNotFoundError, OSError) as e:
         return e
+
 
 
 def get_random_elements(elements, n=20):
@@ -79,7 +81,7 @@ def clustalize(rep_elements, output_path):
     try:
         subprocess.call(['clustalo', '-i', rep_elements,
                          '-o', output_path, '-v', '--force', '--full',
-                         '--cluster-size=5', '--threads', threads],
+                         '--cluster-size=5', '--threads', str(threads)],
                          stdout=FNULL, stderr=subprocess.STDOUT)
         return output_path
     except OSError as e:
@@ -207,3 +209,6 @@ def format_consensus(consensus_file):
                 con.write('> ' + consensus_file + '\n')
             else:
                 con.write(line.strip())
+
+
+make_consensus('/media/ethan/EH_DATA/TARP_Runs/Big_Run/GMR_3/Clusters/Gmr3SOLO')
